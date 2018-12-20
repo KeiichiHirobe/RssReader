@@ -18,7 +18,7 @@ object RssReader {
   def main(args: Array[String]): Unit = {
     val options: OptionMap = getOpt(args)
     var taskList: List[Task] = List.empty[Task]
-    if (options('help) == true) {
+    if (options('help).asInstanceOf[Boolean]) {
       printUsage
       sys.exit(0)
     }
@@ -32,8 +32,8 @@ object RssReader {
       case Some(v) => FileRssWriter(v.asInstanceOf[String])
       case _       => StdOutRssWriter()
     }
-    if (options('cut) == true) taskList = CutTask(CUT_TITLE_COUNT, CUT_BODY_COUNT) :: taskList
-    if (options('convert) == true) taskList = ConvertTask(REPLACE_FROM, REPLACE_TO) :: taskList
+    if (options('cut).asInstanceOf[Boolean]) taskList = CutTask(CUT_TITLE_COUNT, CUT_BODY_COUNT) :: taskList
+    if (options('convert).asInstanceOf[Boolean]) taskList = ConvertTask(REPLACE_FROM, REPLACE_TO) :: taskList
 
     TaskRunner.taskRun(resource, taskList, writer)
   }

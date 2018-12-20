@@ -2,7 +2,7 @@ package behiron.rssreader
 
 object TaskRunner {
   /* outputFileは標準出力の時はNone */
-  def taskRun(resource: RssResource, tasks: Seq[Task], writer: RssWriter) = {
+  def taskRun(resource: RssResource, tasks: Seq[Task], writer: RssWriter): Unit = {
     var invalidRecordCount: Int = 0
     val processedEntries: Seq[Option[RssEntry]] = process(resource, tasks)
     val filteredEntries: Seq[RssEntry] = processedEntries.foldLeft(Nil: List[RssEntry]) ((list, entry) => {
