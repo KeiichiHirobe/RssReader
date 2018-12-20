@@ -20,7 +20,7 @@ object RssResource {
 
 case class RssTextResource(val pathName: String) extends RssResource {
 
-  def getEntries(): Seq[Option[RssEntry]] = {
+  private val entries = {
     var ret: Seq[Option[RssEntry]] = Seq.empty[Option[RssEntry]]
     using(Source.fromFile(pathName)) { s =>
       ret = s.getLines.foldLeft(Nil: List[Option[RssEntry]])((list, line) => {
@@ -32,6 +32,10 @@ case class RssTextResource(val pathName: String) extends RssResource {
     }
     ret
   }
+
+
+  def getEntries(): Seq[Option[RssEntry]] = entries
+
   /* 一行に「title:~ body:~」という形式でレコードがあることを想定 */
   protected def getTitleAndBody(record: String): Option[(String, String)] = {
     val recordFormat = """\s*title:\s*(.+?)\s*body:\s*(.+?)\s*""".r
@@ -43,15 +47,15 @@ case class RssTextResource(val pathName: String) extends RssResource {
 }
 
 case class RssURLResource(val url: String) extends RssResource {
-  def getEntries(): Seq[Option[RssEntry]] = {
 
+  private val entries = {
     //  FileNotExistException, ParseExceptionなどの例外等特にキャッチしない
     val feedUrl = new URL(url)
     val input = new SyndFeedInput
     val feed: SyndFeed = input.build(new XmlReader(feedUrl))
-    val entries = asScalaBuffer(feed.getEntries).toVector
+    val rawEntries = asScalaBuffer(feed.getEntries).toVector
 
-    entries.map(entry => {
+    rawEntries.map(entry => {
         for {
           title <- getTitle(entry)
           rawBody <- getBody(entry)
@@ -59,6 +63,8 @@ case class RssURLResource(val url: String) extends RssResource {
       }
     )
   }
+
+  def getEntries(): Seq[Option[RssEntry]] = entries
 
   /* bodyがdescription以外にある場合はoverrideしてもらう */
   protected def getBody(entry: SyndEntry): Option[String] = {
