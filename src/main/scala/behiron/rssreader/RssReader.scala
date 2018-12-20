@@ -25,7 +25,7 @@ object RssReader {
     }
 
     val resource: RssResource = options('input) match {
-      case Some(v) if v.asInstanceOf[String].matches("^http.+") => RssURLResource(v.asInstanceOf[String])
+      case Some(v) if v.asInstanceOf[String].matches("^http.+") => RssURLResource(ReadUtil.readRssURL(v.asInstanceOf[String]))
       case Some(v) => RssTextResource(ReadUtil.readFile(v.asInstanceOf[String]))
       case _       => throw new Exception("resourceName not specified")
     }

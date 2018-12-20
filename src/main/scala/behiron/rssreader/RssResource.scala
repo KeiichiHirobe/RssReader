@@ -1,10 +1,5 @@
 package behiron.rssreader
-import java.net.URL
-import com.rometools.rome.feed.synd.{SyndFeed, SyndEntry}
-import com.rometools.rome.io.SyndFeedInput
-import com.rometools.rome.io.XmlReader
-import scala.collection.JavaConverters._
-
+import com.rometools.rome.feed.synd.SyndEntry
 
 sealed trait RssResource {
   /* title, bodyのどちらかが取得できない場合はそのレコードは除かずにNoneを返す */
@@ -41,23 +36,15 @@ case class RssTextResource(val contents: Seq[String]) extends RssResource {
   }
 }
 
-case class RssURLResource(val url: String) extends RssResource {
+case class RssURLResource(val syndEntries: Seq[SyndEntry]) extends RssResource {
 
-  private val entries = {
-    //  FileNotExistException, ParseExceptionなどの例外等特にキャッチしない
-    val feedUrl = new URL(url)
-    val input = new SyndFeedInput
-    val feed: SyndFeed = input.build(new XmlReader(feedUrl))
-    val syndEntries: Seq[SyndEntry] = asScalaBuffer(feed.getEntries).toVector
-
-    syndEntries.map(entry => {
-        for {
-          title <- getTitle(entry)
-          rawBody <- getBody(entry)
-        } yield RssEntry(title, cleansingBody(rawBody))
-      }
-    )
-  }
+  private val entries = syndEntries.map(entry => {
+      for {
+        title <- getTitle(entry)
+        rawBody <- getBody(entry)
+      } yield RssEntry(title, cleansingBody(rawBody))
+    }
+  )
 
   def getEntries(): Seq[Option[RssEntry]] = entries
 
