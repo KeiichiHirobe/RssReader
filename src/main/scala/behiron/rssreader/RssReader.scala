@@ -3,6 +3,10 @@ package behiron.rssreader
 object RssReader {
 
   type OptionMap = Map[Symbol, Any]
+  val REPLACE_FROM = "ユーザベース"
+  val REPLACE_TO = "UZABASE"
+  val CUT_TITLE_COUNT = 10
+  val CUT_BODY_COUNT = 30
 
   def printUsage(): Unit = {
     val usage = """
@@ -28,8 +32,8 @@ object RssReader {
       case Some(v) => FileRssWriter(v.asInstanceOf[String])
       case _       => StdOutRssWriter()
     }
-    if (options('cut) == true) taskList = CutTask() :: taskList
-    if (options('convert) == true) taskList = ConvertTask() :: taskList
+    if (options('cut) == true) taskList = CutTask(CUT_TITLE_COUNT, CUT_BODY_COUNT) :: taskList
+    if (options('convert) == true) taskList = ConvertTask(REPLACE_FROM, REPLACE_TO) :: taskList
 
     TaskRunner.taskRun(resource, taskList, writer)
   }

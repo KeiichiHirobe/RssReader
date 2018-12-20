@@ -10,19 +10,19 @@ class TaskSpec extends FunSpec with DiagrammedAssertions {
 
   describe("Task") {
     it("convert") {
-      val done = ConvertTask().process(entry)
+      val done = ConvertTask("ユーザベース", "UZABASE").process(entry)
       assert(entry.title == done.title)
       assert(done.body === "UZABASEに入社して約2ヶ月しか経ってませんが、UZABASEUZABASEこの技術ブログに..."
 )
     }
     it("cut") {
-      val done = CutTask().process(entry)
+      val done = CutTask(10, 30).process(entry)
       assert(done.title == "お試し就職制度を導入")
       assert(done.body == "ユーザベースに入社して約2ヶ月しか経ってませんが、ユーザベー")
     }
     it("convert must be done first") {
-      val taskList1 = List(CutTask(), ConvertTask())
-      val taskList2 = List(ConvertTask(), CutTask())
+      val taskList1 = List(CutTask(10, 30), ConvertTask("ユーザベース", "UZABASE"))
+      val taskList2 = List(ConvertTask("ユーザベース", "UZABASE"), CutTask(10, 30))
 
       assert((taskList1.sorted(TaskOrdering))(0) == taskList1(1))
       assert((taskList2.sorted(TaskOrdering))(0) == taskList2(0))

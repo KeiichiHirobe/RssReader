@@ -5,18 +5,14 @@ sealed trait Task {
   def process(entry: RssEntry): RssEntry
 }
 
-case class ConvertTask() extends Task {
-  protected val REPLACE_FROM = "ユーザベース"
-  protected val REPLACE_TO = "UZABASE"
+case class ConvertTask(val replaceFrom: String, val replaceTo: String) extends Task {
   def process(entry: RssEntry): RssEntry = RssEntry(entry.title,
-    entry.body.replaceAll(REPLACE_FROM, REPLACE_TO))
+    entry.body.replaceAll(replaceFrom, replaceTo))
 }
 
-case class CutTask() extends Task {
-  protected val CUT_TITLE_COUNT = 10
-  protected val CUT_BODY_COUNT = 30
-  def process(entry: RssEntry): RssEntry = RssEntry(entry.title.take(CUT_TITLE_COUNT),
-    entry.body.take(CUT_BODY_COUNT))
+case class CutTask(val titleCount: Int, val bodyCount: Int) extends Task {
+  def process(entry: RssEntry): RssEntry = RssEntry(entry.title.take(titleCount),
+    entry.body.take(bodyCount))
 }
 
 object TaskOrdering extends Ordering[Task] {
