@@ -53,9 +53,9 @@ case class RssURLResource(val url: String) extends RssResource {
     val feedUrl = new URL(url)
     val input = new SyndFeedInput
     val feed: SyndFeed = input.build(new XmlReader(feedUrl))
-    val rawEntries = asScalaBuffer(feed.getEntries).toVector
+    val syndEntries: Seq[SyndEntry] = asScalaBuffer(feed.getEntries).toVector
 
-    rawEntries.map(entry => {
+    syndEntries.map(entry => {
         for {
           title <- getTitle(entry)
           rawBody <- getBody(entry)
