@@ -1,4 +1,5 @@
 package behiron.rssreader
+import behiron.rssreader.utils.ReadUtil
 
 object RssReader {
 
@@ -25,7 +26,7 @@ object RssReader {
 
     val resource: RssResource = options('input) match {
       case Some(v) if v.asInstanceOf[String].matches("^http.+") => RssURLResource(v.asInstanceOf[String])
-      case Some(v) => RssTextResource(v.asInstanceOf[String])
+      case Some(v) => RssTextResource(ReadUtil.readFile(v.asInstanceOf[String]))
       case _       => throw new Exception("resourceName not specified")
     }
     val writer: RssWriter = options('output) match {

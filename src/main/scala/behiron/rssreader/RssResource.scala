@@ -4,8 +4,6 @@ import com.rometools.rome.feed.synd.{SyndFeed, SyndEntry}
 import com.rometools.rome.io.SyndFeedInput
 import com.rometools.rome.io.XmlReader
 import scala.collection.JavaConverters._
-import behiron.rssreader.utils.LoanPattern.using
-import scala.io.Source
 
 
 sealed trait RssResource {
@@ -18,21 +16,18 @@ object RssResource {
   def cleansingText(orig: String): String = orig.replaceAllLiterally("\n", "\\n")
 }
 
-case class RssTextResource(val pathName: String) extends RssResource {
+case class RssTextResource(val contents: Seq[String]) extends RssResource {
 
   private val entries = {
     var ret: Seq[Option[RssEntry]] = Seq.empty[Option[RssEntry]]
-    using(Source.fromFile(pathName)) { s =>
-      ret = s.getLines.foldLeft(Nil: List[Option[RssEntry]])((list, line) => {
-        getTitleAndBody(line) match {
-          case Some((title, body)) => Some(RssEntry(title, body)) :: list
-          case _                   => None :: list
-        }
-      }).reverse
-    }
+    ret = contents.foldLeft(Nil: List[Option[RssEntry]])((list, line) => {
+      getTitleAndBody(line) match {
+        case Some((title, body)) => Some(RssEntry(title, body)) :: list
+        case _                   => None :: list
+      }
+    }).reverse
     ret
   }
-
 
   def getEntries(): Seq[Option[RssEntry]] = entries
 
