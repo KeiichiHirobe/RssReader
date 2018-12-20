@@ -51,3 +51,7 @@ title: 【超新卒！イベントレ body: NewsPicksエンジニアの久保で
 # get url and convert, cut, print to file
 $ java -jar ./target/scala-2.12/rssreader.jar https://tech.uzabase.com/rss  --convert --cut  --output ./output
 ```
+
+UML
+-----
+クラス図はトップディレクトリに`UML.pdf`として配置
