@@ -51,6 +51,37 @@ title: 【超新卒！イベントレ body: NewsPicksエンジニアの久保で
 # get url and convert, cut, print to file
 $ java -jar ./target/scala-2.12/rssreader.jar https://tech.uzabase.com/rss  --convert --cut  --output ./output
 ```
+Test
+-----
+```bash
+# check codestyle
+sbt:rssreader> scalastyle
+[info] scalastyle using config scalastyle-config.xml
+[info] scalastyle Processed 8 file(s)
+[info] scalastyle Found 0 errors
+[info] scalastyle Found 0 warnings
+[info] scalastyle Found 0 infos
+[info] scalastyle Finished in 0 ms
+[success]
+# unittest
+sbt:rssreader> test
+[info] RssResorceSpec:
+[info] RssTextResource
+[info] - valid record parsed correctly
+[info] - invalid record parsed as None
+[info] TaskSpec:
+[info] Task
+[info] - convert
+[info] - cut
+[info] - convert must be done first
+[info] Run completed in 366 milliseconds.
+[info] Total number of tests run: 5
+[info] Suites: completed 2, aborted 0
+[info] Tests: succeeded 5, failed 0, canceled 0, ignored 0, pending 0
+[info] All tests passed.
+[success]
+
+```
 
 UML
 -----
